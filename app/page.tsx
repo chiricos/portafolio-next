@@ -1,26 +1,29 @@
-async function getData() {
-  const res = await fetch('http://portafolio.ddev.site/jsonapi/node/article', {
-    cache: 'no-store'
-  });
+import Nav from "./components/Nav";
+import Reveal from "./components/Reveal";
+import Hero from "./components/Hero";
+import Services from "./components/Services";
+import Work from "./components/Work";
+import About from "./components/About";
+import Testimonials from "./components/Testimonials";
+import Blog from "./components/Blog";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
-  if (!res.ok) {
-    throw new Error('Error al cargar datos');
-  }
-
-  return res.json();
-}
-
-export default async function Page() {
-  const data = await getData();
-
+export default function Page() {
   return (
-    <div>
-      <h1>Artículos</h1>
-      {data.data.map((item: any) => (
-        <div key={item.id}>
-          <h2>{item.attributes.title}</h2>
-        </div>
-      ))}
-    </div>
+    <>
+      <Nav />
+      <Reveal />
+      <main>
+        <Hero />
+        <Services />
+        <Work />
+        <About />
+        <Testimonials />
+        <Blog />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }
