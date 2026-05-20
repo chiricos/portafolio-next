@@ -1,17 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState, useEffect } from "react";
+import { submitContact, type ContactFormState } from "../actions/contact";
+
+const initialState: ContactFormState = { ok: false };
 
 export default function Contact() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [state, formAction, isPending] = useActionState(submitContact, initialState);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("sending");
-    // TODO: conectar con endpoint de envío de correo
-    await new Promise((r) => setTimeout(r, 1000));
-    setStatus("sent");
-  };
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Restore values from state when the action returns an error (React 19 resets form fields)
+  useEffect(() => {
+    if (!state.ok && state.values) {
+      setName(state.values.name);
+      setEmail(state.values.email);
+      setSubject(state.values.subject);
+      setMessage(state.values.message);
+    }
+  }, [state]);
 
   return (
     <section id="contact" className="py-24">
@@ -75,7 +85,7 @@ export default function Contact() {
             </div>
 
             <div className="reveal d2">
-              {status === "sent" ? (
+              {state.ok ? (
                 <div className="flex flex-col items-center justify-center h-full gap-4 text-center py-12">
                   <div className="w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full">
                     <svg className="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -86,7 +96,12 @@ export default function Contact() {
                   <p className="text-zinc-400 text-sm">Te responderé en menos de 24 horas.</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate>
+                <form action={formAction} noValidate>
+                  {state.error && (
+                    <p className="mb-4 text-sm text-red-400 bg-red-400/10 rounded-xl px-4 py-3">
+                      {state.error}
+                    </p>
+                  )}
                   <div className="flex flex-col gap-4">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
@@ -100,8 +115,14 @@ export default function Contact() {
                           placeholder="Ana García"
                           required
                           autoComplete="name"
-                          className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors aria-[invalid]:border-red-500"
+                          aria-invalid={state.fieldErrors?.name ? true : undefined}
                         />
+                        {state.fieldErrors?.name && (
+                          <p className="mt-1 text-xs text-red-400">{state.fieldErrors.name}</p>
+                        )}
                       </div>
                       <div>
                         <label htmlFor="femail" className="block text-xs font-medium text-zinc-400 mb-1.5">
@@ -114,19 +135,27 @@ export default function Contact() {
                           placeholder="ana@empresa.com"
                           required
                           autoComplete="email"
-                          className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors aria-[invalid]:border-red-500"
+                          aria-invalid={state.fieldErrors?.email ? true : undefined}
                         />
+                        {state.fieldErrors?.email && (
+                          <p className="mt-1 text-xs text-red-400">{state.fieldErrors.email}</p>
+                        )}
                       </div>
                     </div>
                     <div>
                       <label htmlFor="fsubject" className="block text-xs font-medium text-zinc-400 mb-1.5">
                         Asunto
                       </label>
-                      <input
+                        <input
                         type="text"
                         id="fsubject"
                         name="subject"
                         placeholder="Consulta sobre proyecto"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
                         className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors"
                       />
                     </div>
@@ -140,15 +169,21 @@ export default function Contact() {
                         rows={4}
                         placeholder="Cuéntame sobre tu proyecto..."
                         required
-                        className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors resize-none"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors resize-none aria-[invalid]:border-red-500"
+                        aria-invalid={state.fieldErrors?.message ? true : undefined}
                       />
+                      {state.fieldErrors?.message && (
+                        <p className="mt-1 text-xs text-red-400">{state.fieldErrors.message}</p>
+                      )}
                     </div>
                     <button
                       type="submit"
-                      disabled={status === "sending"}
+                      disabled={isPending}
                       className="shimmer w-full bg-accent text-white font-display font-bold text-sm py-3.5 rounded-xl hover:bg-accent-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      {status === "sending" ? "Enviando…" : "Enviar mensaje →"}
+                      {isPending ? "Enviando…" : "Enviar mensaje →"}
                     </button>
                   </div>
                 </form>

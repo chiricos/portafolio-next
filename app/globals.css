@@ -84,3 +84,24 @@ body::before {
 
 /* skill tag */
 .stag { transition: border-color .18s; }
+
+/* article body prose */
+.prose h2 { font-family: var(--font-pt-sans), sans-serif; font-size: 1.5rem; font-weight: 700; margin: 2rem 0 .75rem; color: inherit; }
+.prose h3 { font-family: var(--font-pt-sans), sans-serif; font-size: 1.2rem; font-weight: 700; margin: 1.75rem 0 .5rem; color: inherit; }
+.prose p  { margin-bottom: 1.25rem; line-height: 1.8; }
+.prose ul, .prose ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin-bottom: .4rem; line-height: 1.75; }
+.prose a  { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
+.prose a:hover { color: var(--color-accent-light); }
+.prose strong { font-weight: 700; }
+.prose em { font-style: italic; }
+.prose code { font-size: .875em; background: rgb(244 244 245); padding: .15em .4em; border-radius: .25rem; }
+.dark .prose code { background: rgb(39 39 42); }
+.prose pre  { background: rgb(24 24 27); color: rgb(244 244 245); padding: 1.25rem 1.5rem; border-radius: .75rem; overflow-x: auto; margin-bottom: 1.5rem; font-size: .875rem; line-height: 1.7; }
+.prose pre code { background: transparent; padding: 0; }
+.prose blockquote { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: rgb(113 113 122); }
+.prose hr { border: none; border-top: 1px solid rgb(228 228 231); margin: 2rem 0; }
+.dark .prose hr { border-color: rgb(63 63 70); }
+.prose img { border-radius: .75rem; max-width: 100%; margin: 1.5rem 0; }
