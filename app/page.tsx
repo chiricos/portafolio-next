@@ -1,4 +1,4 @@
-import Nav from "./components/Nav";
+import NavServer from "./components/NavServer";
 import Reveal from "./components/Reveal";
 import Hero from "./components/Hero";
 import Services from "./components/Services";
@@ -12,7 +12,7 @@ import Footer from "./components/Footer";
 export default function Page() {
   return (
     <>
-      <Nav />
+      <NavServer />
       <Reveal />
       <main>
         <Hero />

@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { MenuItem } from "@/lib/drupal";
 
-const navLinks = [
-  { href: "#services", label: "Servicios" },
-  { href: "#work", label: "Proyectos" },
-  { href: "#about", label: "Sobre mí" },
-  { href: "#reviews", label: "Testimonios" },
-  { href: "#blog", label: "Blog" },
-  { href: "#contact", label: "Contacto" },
-];
+interface NavProps {
+  menuItems: MenuItem[];
+}
 
-export default function Nav() {
+export default function Nav({ menuItems }: NavProps) {
+  const navLinks = menuItems.map((item) => ({
+    href: item.url,
+    label: item.title,
+  }));
   const [dark, setDark] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
